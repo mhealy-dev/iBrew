@@ -1,27 +1,41 @@
-import { StyleSheet, Text, View, Button } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeScreen from "./src/components/HomeScreen";
+import SignupScreen from "./src/components/SignupScreen";
+import LoginScreen from "./src/components/LoginScreen";
+import ProfileScreen from "./src/components/ProfileScreen";
+import SettingsScreen from "./src/components/SettingsScreen";
+import DarkModeContext from "./src/components/ThemeContext";
 
-export default function App() {
+const Stack = createStackNavigator();
+
+function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>iBrew</Text>
-      <Text style={styles.title}>The home brew app!</Text>
-      <Button title="Click me!" />
-    </View>
+    <DarkModeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </DarkModeContext.Provider>
   );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
-    alignItems: "center",
     justifyContent: "center",
-  },
-  title: {
-    backgroundColor: "#a4a4a4",
-    padding: 5,
-    color: "#000",
     alignItems: "center",
-    justifyContent: "center",
   },
 });
