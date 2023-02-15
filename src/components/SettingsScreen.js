@@ -1,45 +1,27 @@
 import React, { useState, useContext } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Switch } from "react-native";
-import DarkModeContext from "./ThemeContext";
 
 function SettingsScreen({ navigation }) {
-  const { isDarkMode, setIsDarkMode } = useContext(DarkModeContext);
-
-  const handleViewProfile = () => {
-    navigation.navigate("Profile");
-  };
-
   const handleResetPassword = () => {
     // Navigate to the reset password screen
   };
 
   const handleLogout = () => {
     navigation.navigate("Login");
-  };
-
-  const handleToggleDarkMode = () => {
-    setIsDarkModeEnabled((prevValue) => !prevValue);
-    // Update the app's theme to reflect the new mode
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login", params: { showBackButton: false } }],
+    });
   };
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkMode]}>
-      <TouchableOpacity style={styles.option} onPress={handleViewProfile}>
-        <Text style={styles.optionText}>View Profile</Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
       <TouchableOpacity style={styles.option} onPress={handleResetPassword}>
         <Text style={styles.optionText}>Reset Password</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.option} onPress={handleLogout}>
         <Text style={styles.optionText}>Logout</Text>
       </TouchableOpacity>
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchText}>Dark Mode</Text>
-        <Switch
-          value={isDarkMode}
-          onValueChange={(newValue) => setIsDarkMode(newValue)}
-        />
-      </View>
     </View>
   );
 }

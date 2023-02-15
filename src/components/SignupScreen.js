@@ -12,11 +12,15 @@ const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const handleLoginPress = () => {
+    navigation.navigate("Login");
+  };
+
   const handleSignup = () => {
     // Do something with the email, username, and password values
     // For example, make an API call to create a new account
     // Then navigate to the HomeScreen or a confirmation screen
-    navigation.navigate("Home");
+    navigation.navigate("Login");
   };
 
   return (
@@ -44,6 +48,9 @@ const SignupScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Create account</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={handleLoginPress}>
+        <Text style={styles.altText}>Already have an Account?</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -68,7 +75,8 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   button: {
-    backgroundColor: "#eaeaea",
+    backgroundColor: "#dadada",
+    borderColor: "#999999",
     padding: 10,
     marginTop: 20,
     borderRadius: 5,
@@ -76,6 +84,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#303030",
     fontWeight: "bold",
+  },
+  altText: {
+    marginTop: 20,
+    color: "#303030",
+    textDecorationLine: "underline",
   },
 });
 

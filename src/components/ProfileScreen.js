@@ -1,17 +1,14 @@
 import React, { useContext } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import DarkModeContext from "./ThemeContext";
 
 const ProfileScreen = ({ navigation }) => {
-  const { isDarkMode } = useContext(DarkModeContext);
-
   const handleSettingsPress = () => {
     navigation.navigate("Settings");
   };
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkMode]}>
+    <View style={[styles.container]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleSettingsPress}>
           <Ionicons name="settings-outline" size={28} color="#FFFFFF" />
@@ -39,9 +36,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
-  },
-  darkMode: {
-    backgroundColor: "#000",
   },
   header: {
     backgroundColor: "#333333",

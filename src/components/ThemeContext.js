@@ -1,30 +1,30 @@
-import React, { createContext, useState } from "react";
+import React, { useState, createContext } from "react";
+import { Appearance } from "react-native";
 
-const DarkModeContext = React.createContext(false);
+export const ThemeContext = createContext();
 
-export default DarkModeContext;
+export const ThemeProvider = (props) => {
+  const [theme, setTheme] = useState(
+    Appearance.getColorScheme() === "dark" ? "dark" : "light"
+  );
 
-// export const ThemeContext = createContext({
-//   darkMode: false,
-//   toggleDarkMode: () => {},
-// });
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+  };
 
-// export const ThemeProvider = ({ children }) => {
-//   const [darkMode, setDarkMode] = useState(false);
-
-//   const toggleDarkMode = () => {
-//     setDarkMode(!darkMode);
-//   };
-
-//   return (
-//     <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
-//       {children}
-//     </ThemeContext.Provider>
-//   );
-// };
-
-const dark = {
-  background: "#222",
-  color: "#fff",
-  // add other styles for dark mode here
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme === "dark" ? "#000" : "#fff",
+  },
+});

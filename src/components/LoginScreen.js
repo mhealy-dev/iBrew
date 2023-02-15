@@ -11,15 +11,20 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Do something with the email and password values
-    // For example, make an API call to verify the credentials
-    // Then navigate to the HomeScreen or a dashboard screen
-    navigation.navigate("Profile");
+  const handleLoginPress = () => {
+    // Navigate to HomeScreen and remove the back button from the navigation header
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home", params: { showBackButton: false } }],
+    });
+  };
+
+  const handleSignupPress = () => {
+    navigation.navigate("Signup");
   };
 
   const handleForgotPassword = () => {
-    // Do something when the "Forgot Password?" text is pressed
+    navigation.navigate("Forgot Password");
   };
 
   return (
@@ -38,11 +43,14 @@ const LoginScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+      <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
         <Text style={styles.buttonText}>Log in</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleSignupPress}>
+        <Text style={styles.createAccount}>Create an Account?</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,7 +79,8 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   button: {
-    backgroundColor: "#eaeaea",
+    backgroundColor: "#dadada",
+    borderColor: "#999999",
     padding: 10,
     marginTop: 20,
     borderRadius: 5,
@@ -82,8 +91,17 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     marginTop: 20,
-    color: "#eaeaea",
+    color: "#303030",
     textDecorationLine: "underline",
+  },
+  createAccount: {
+    marginTop: 10,
+    color: "#303030",
+    textDecorationLine: "underline",
+  },
+  altText: {
+    marginTop: 10,
+    color: "#303030",
   },
 });
 
