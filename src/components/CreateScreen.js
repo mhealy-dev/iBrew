@@ -9,35 +9,37 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const CreateScreen = () => {
-  const [brewName, setBrewName] = useState("");
-  const [brewDate, setBrewDate] = useState(new Date());
-  const [brewStyle, setBrewStyle] = useState("");
+  const navigation = useNavigation();
+  const [name, setBrewName] = useState("");
+  const [date, setBrewDate] = useState(new Date());
+  const [style, setBrewStyle] = useState("");
   const [batchSize, setBatchSize] = useState("");
-  const [brewNotes, setBrewNotes] = useState("");
+  const [notes, setBrewNotes] = useState("");
 
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
-    const currentDate = selectedDate || brewDate;
+    const currentDate = selectedDate || date;
     setBrewDate(currentDate);
   };
 
   const handleSubmit = async () => {
-    console.log("Brew Name: ", brewName);
-    console.log("Brew Date: ", brewDate.toLocaleDateString("en-US"));
-    console.log("Brew Style: ", brewStyle);
+    console.log("Brew Name: ", name);
+    console.log("Brew Date: ", date.toLocaleDateString("en-US"));
+    console.log("Brew Style: ", style);
     console.log("Batch Size: ", batchSize);
-    console.log("Brew Notes: ", brewNotes);
+    console.log("Brew Notes: ", notes);
 
     const newBrew = {
-      brewName,
-      brewDate: brewDate.toLocaleDateString("en-US"),
-      brewStyle,
+      name,
+      date: date.toLocaleDateString("en-US"),
+      style,
       batchSize,
-      brewNotes,
+      notes,
     };
 
     try {
@@ -49,6 +51,7 @@ const CreateScreen = () => {
       await AsyncStorage.setItem("brews", JSON.stringify(newBrews));
 
       console.log("Brew saved successfully");
+      navigation.navigate("Home");
     } catch (error) {
       console.log("Error saving brew:", error);
     }
@@ -60,7 +63,7 @@ const CreateScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Brew Name"
-        value={brewName}
+        value={name}
         onChangeText={(text) => setBrewName(text)}
       />
       <Text style={styles.textTitle}>Brew Date:</Text>
@@ -69,12 +72,12 @@ const CreateScreen = () => {
         onPress={() => setShowDatePicker(true)}
       >
         <Text style={styles.text}>
-          {brewDate ? brewDate.toLocaleDateString("en-US") : "Brew Date"}
+          {date ? date.toLocaleDateString("en-US") : "Brew Date"}
         </Text>
       </TouchableOpacity>
       {showDatePicker && (
         <DateTimePicker
-          value={brewDate || new Date()}
+          value={date || new Date()}
           mode="date"
           display="default"
           onChange={handleDateChange}
@@ -84,7 +87,7 @@ const CreateScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Brew Style"
-        value={brewStyle}
+        value={style}
         onChangeText={setBrewStyle}
       />
       <Text style={styles.textTitle}>Brew Size:</Text>
@@ -98,7 +101,7 @@ const CreateScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Notes"
-        value={brewNotes}
+        value={notes}
         onChangeText={(text) => setBrewNotes(text)}
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>

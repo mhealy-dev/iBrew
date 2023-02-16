@@ -1,8 +1,21 @@
-import React, { useContext } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useContext } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   const handleSettingsPress = () => {
     navigation.navigate("Settings");
   };
@@ -20,33 +33,35 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={[styles.container]}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={handleProfilePress}
-          style={styles.profileButton}
-        >
-          <Ionicons name="person" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleSettingsPress}>
-          <Ionicons name="settings-outline" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
+    <SafeAreaView>
+      <View style={[styles.container]}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={handleProfilePress}
+            style={styles.profileButton}
+          >
+            <Ionicons name="person" size={28} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSettingsPress}>
+            <Ionicons name="settings-outline" size={28} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.tilesContainer}>
+          <TouchableOpacity style={styles.tile} onPress={handleCreateBrewPress}>
+            <Text style={styles.tileText}>Create a Brew</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tile} onPress={handleActiveBrewPress}>
+            <Text style={styles.tileText}>Active Brews</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tile}>
+            <Text style={styles.tileText}>Create a Recipe</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tile}>
+            <Text style={styles.tileText}>Recipe List</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.tilesContainer}>
-        <TouchableOpacity style={styles.tile} onPress={handleCreateBrewPress}>
-          <Text style={styles.tileText}>Create a Brew</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tile} onPress={handleActiveBrewPress}>
-          <Text style={styles.tileText}>Active Brews</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tile}>
-          <Text style={styles.tileText}>Create a Recipe</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tile}>
-          <Text style={styles.tileText}>Recipe List</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -54,6 +69,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
+    paddingTop: Platform.OS === "ios" ? 44 : 22, // 44 for iOS and 22 for Android
   },
   header: {
     backgroundColor: "#333333",
@@ -91,7 +107,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-HomeScreen.navigationOptions = {
-  headerLeft: null,
-};

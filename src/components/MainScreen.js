@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 const MainScreen = ({ navigation }) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   const handleSignupPress = () => {
     navigation.navigate("Signup");
   };
@@ -32,10 +38,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "#000",
-    fontSize: 20,
+    color: "#333333",
+    fontSize: 40,
     fontWeight: "bold",
-    marginBottom: 20,
+    alignSelf: "center",
+    marginBottom: 70, // Increase marginTop to move the text higher
   },
   buttonContainer: {
     flexDirection: "row",
@@ -45,13 +52,16 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#dadada",
     borderColor: "#999999",
-    padding: 10,
+    paddingVertical: 20, // Adjust paddingVertical to increase button height
+    paddingHorizontal: 30, // Adjust paddingHorizontal to increase button width
     marginHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 10, // Adjust borderRadius to make button edges more round
+    marginBottom: 50, // Increase marginTop to move the buttons higher
   },
   buttonText: {
-    color: "#303030",
+    color: "#333333",
     fontWeight: "bold",
+    fontSize: 18,
   },
 });
 

@@ -21,7 +21,7 @@ const ActiveScreen = ({ navigation }) => {
       if (brewsJson !== null) {
         const storedBrews = JSON.parse(brewsJson).map((brew) => ({
           ...brew,
-          brewDate: new Date(brew.brewDate),
+          date: new Date(brew.date),
         }));
         setBrews(storedBrews);
       }
@@ -40,11 +40,11 @@ const ActiveScreen = ({ navigation }) => {
       onPress={() => handleBrewPress(item)}
     >
       <View style={styles.brewCardContent}>
-        <Text style={styles.brewName}>{item.brewName}</Text>
+        <Text style={styles.brewName}>{item.name}</Text>
         <Text style={styles.brewDate}>
-          {item.brewDate.toLocaleDateString("en-US")}
+          {item.date.toLocaleDateString("en-US")}
         </Text>
-        <Text style={styles.brewStyle}>{item.brewStyle}</Text>
+        <Text style={styles.brewStyle}>{item.style}</Text>
       </View>
     </TouchableOpacity>
   );
