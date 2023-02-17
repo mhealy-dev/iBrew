@@ -33,7 +33,10 @@ const ActiveScreen = ({ navigation }) => {
   };
 
   const handleBrewPress = (brew) => {
-    navigation.navigate("Details", { brew: brew, refreshBrews: refreshBrews });
+    navigation.navigate("Brew Details", {
+      brew: brew,
+      refreshBrews: refreshBrews,
+    });
   };
 
   const refreshBrews = (refresh) => {

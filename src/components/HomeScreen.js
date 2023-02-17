@@ -27,7 +27,15 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleActiveBrewPress = () => {
-    navigation.navigate("Active Brew");
+    navigation.navigate("Active Brews");
+  };
+
+  const handleCreateRecipePress = () => {
+    navigation.navigate("Create a Recipe");
+  };
+
+  const handleRecipeListPress = () => {
+    navigation.navigate("Recipe List");
   };
 
   return (
@@ -51,10 +59,13 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.tile} onPress={handleActiveBrewPress}>
             <Text style={styles.tileText}>Active Brews</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tile}>
+          <TouchableOpacity
+            style={styles.tile}
+            onPress={handleCreateRecipePress}
+          >
             <Text style={styles.tileText}>Create a Recipe</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tile}>
+          <TouchableOpacity style={styles.tile} onPress={handleRecipeListPress}>
             <Text style={styles.tileText}>Recipe List</Text>
           </TouchableOpacity>
         </View>

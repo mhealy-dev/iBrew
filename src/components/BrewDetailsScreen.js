@@ -50,7 +50,7 @@ const DetailsScreen = ({ route }) => {
         updatedBrews[brewIndex] = updatedBrew;
         await AsyncStorage.setItem("brews", JSON.stringify(updatedBrews));
         console.log("Brew saved successfully");
-        navigation.goBack();
+        navigation.navigate("Active Brews");
         refreshBrews(true); // Set to true to refresh the brews
       }
     } catch (error) {

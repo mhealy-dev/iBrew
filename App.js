@@ -12,6 +12,9 @@ import ForgotPasswordScreen from "./src/components/ForgotPasswordScreen";
 import CreateBrewScreen from "./src/components/CreateBrewScreen";
 import ActiveBrewListScreen from "./src/components/ActiveBrewListScreen";
 import BrewDetailsScreen from "./src/components/BrewDetailsScreen";
+import CreateRecipeScreen from "./src/components/CreateRecipeScreen";
+import RecipeListScreen from "./src/components/RecipeListScreen";
+import RecipeDetailsScreen from "./src/components/RecipeDetailsScreen";
 
 const Stack = createStackNavigator();
 
@@ -25,8 +28,11 @@ function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Create a Brew" component={CreateBrewScreen} />
-        <Stack.Screen name="Active Brew" component={ActiveBrewListScreen} />
-        <Stack.Screen name="Details" component={BrewDetailsScreen} />
+        <Stack.Screen name="Active Brews" component={ActiveBrewListScreen} />
+        <Stack.Screen name="Brew Details" component={BrewDetailsScreen} />
+        <Stack.Screen name="Create a Recipe" component={CreateRecipeScreen} />
+        <Stack.Screen name="Recipe List" component={RecipeListScreen} />
+        <Stack.Screen name="Recipe Details" component={RecipeDetailsScreen} />
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}

@@ -9,6 +9,7 @@ import {
   Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
@@ -16,6 +17,7 @@ const ProfileScreen = () => {
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -25,6 +27,25 @@ const ProfileScreen = () => {
         if (status !== "granted") {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
+      }
+
+      try {
+        // Retrieve the saved data from the local storage
+        const data = await AsyncStorage.getItem("userData");
+
+        if (data !== null) {
+          // Parse the string back into an object
+          const savedData = JSON.parse(data);
+
+          // Update the state variables with the saved data
+          setImage(savedData.image);
+          setFirstName(savedData.firstName);
+          setLastName(savedData.lastName);
+          setUsername(savedData.username);
+          setEmail(savedData.email);
+        }
+      } catch (error) {
+        console.error("Error loading data: ", error);
       }
     })();
   }, []);
@@ -42,10 +63,29 @@ const ProfileScreen = () => {
     }
   };
 
+  const saveData = async () => {
+    try {
+      // Create an object with the data to be saved
+      const data = {
+        image: image,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        email: email,
+      };
+
+      // Convert the object to a string and save it to the local storage
+      await AsyncStorage.setItem("userData", JSON.stringify(data));
+    } catch (error) {
+      console.error("Error saving data: ", error);
+      throw error;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={pickImage}>
+        <TouchableOpacity onPress={pickImage} disabled={!isEditing}>
           {image ? (
             <Image style={styles.profileImage} source={{ uri: image }} />
           ) : (
@@ -57,9 +97,9 @@ const ProfileScreen = () => {
           )}
         </TouchableOpacity>
         <View style={styles.profileTextContainer}>
-          <Text style={styles.nameText}>{`${firstName} ${lastName}`}</Text>
-          <Text style={styles.usernameText}>{`@${username}`}</Text>
-          <Text style={styles.emailText}>{email}</Text>
+          <Text style={styles.profileText}>{`${firstName} ${lastName}`}</Text>
+          <Text style={styles.profileText}>{`${username}`}</Text>
+          <Text style={styles.profileText}>{email}</Text>
         </View>
       </View>
       <View style={styles.formContainer}>
@@ -68,34 +108,57 @@ const ProfileScreen = () => {
           placeholder="First Name"
           onChangeText={setFirstName}
           value={firstName}
+          editable={isEditing}
         />
         <TextInput
           style={styles.input}
           placeholder="Last Name"
           onChangeText={setLastName}
           value={lastName}
+          editable={isEditing}
         />
         <TextInput
           style={styles.input}
           placeholder="Username"
           onChangeText={setUsername}
           value={username}
+          editable={isEditing}
         />
         <TextInput
           style={styles.input}
           placeholder="Email"
           onChangeText={setEmail}
           value={email}
+          editable={isEditing}
         />
-        <TouchableOpacity style={styles.button}>
-          <Text
-            style={styles.buttonText}
-            title="Save"
-            onPress={() => console.log("Save pressed")}
+        {isEditing ? (
+          <TouchableOpacity style={styles.button}>
+            <Text
+              style={styles.buttonText}
+              title="Save"
+              onPress={async () => {
+                try {
+                  // Save the data asynchronously here
+                  console.log("Saving data...");
+                  await saveData();
+                  console.log("Data saved successfully!");
+                  setIsEditing(false);
+                } catch (error) {
+                  console.error("Error saving data: ", error);
+                }
+              }}
+            >
+              Save
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setIsEditing(true)}
           >
-            Save
-          </Text>
-        </TouchableOpacity>
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -129,7 +192,12 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   profileTextContainer: {
-    marginTop: 10,
+    marginTop: 12,
+    alignItems: "center",
+  },
+  profileText: {
+    fontWeight: "bold",
+    marginTop: 1,
   },
   formContainer: {
     marginVertical: 10,
