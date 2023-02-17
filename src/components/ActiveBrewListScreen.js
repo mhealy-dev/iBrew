@@ -5,15 +5,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ActiveScreen = ({ navigation }) => {
   const [brews, setBrews] = useState([]);
+  const [refreshActiveScreen, setRefreshActiveScreen] = useState(false);
 
   useEffect(() => {
     loadBrews();
-  }, []);
+  }, [refreshActiveScreen]);
 
   const loadBrews = async () => {
     try {
@@ -31,7 +33,11 @@ const ActiveScreen = ({ navigation }) => {
   };
 
   const handleBrewPress = (brew) => {
-    navigation.navigate("Details", { brew: brew });
+    navigation.navigate("Details", { brew: brew, refreshBrews: refreshBrews });
+  };
+
+  const refreshBrews = (refresh) => {
+    setRefreshActiveScreen(refresh);
   };
 
   const renderItem = ({ item }) => (
@@ -42,7 +48,7 @@ const ActiveScreen = ({ navigation }) => {
       <View style={styles.brewCardContent}>
         <Text style={styles.brewName}>{item.name}</Text>
         <Text style={styles.brewDate}>
-          {item.date.toLocaleDateString("en-US")}
+          {item.date.toISOString().slice(0, 10)}
         </Text>
         <Text style={styles.brewStyle}>{item.style}</Text>
       </View>
@@ -50,13 +56,15 @@ const ActiveScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={brews}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <FlatList
+          data={brews}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 

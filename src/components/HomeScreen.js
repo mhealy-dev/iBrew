@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,11 +10,9 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
+  // useEffect(() => {
+  //   navigation.setOptions({});
+  // }, [navigation]);
 
   const handleSettingsPress = () => {
     navigation.navigate("Settings");
@@ -34,18 +32,18 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={handleProfilePress}
+          style={styles.profileButton}
+        >
+          <Ionicons name="person" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSettingsPress}>
+          <Ionicons name="settings-outline" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
       <View style={[styles.container]}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={handleProfilePress}
-            style={styles.profileButton}
-          >
-            <Ionicons name="person" size={28} color="#FFFFFF" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSettingsPress}>
-            <Ionicons name="settings-outline" size={28} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
         <View style={styles.tilesContainer}>
           <TouchableOpacity style={styles.tile} onPress={handleCreateBrewPress}>
             <Text style={styles.tileText}>Create a Brew</Text>

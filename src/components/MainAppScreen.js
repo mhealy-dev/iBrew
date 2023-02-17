@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 
-const MainScreen = ({ navigation }) => {
+const MainAppScreen = ({ navigation }) => {
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -17,17 +23,19 @@ const MainScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>iBrew</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleSignupPress}>
-          <Text style={styles.buttonText}>Signup</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <Text style={styles.text}>iBrew</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSignupPress}>
+            <Text style={styles.buttonText}>Signup</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -65,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainScreen;
+export default MainAppScreen;
