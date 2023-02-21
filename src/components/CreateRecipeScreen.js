@@ -5,33 +5,34 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
+import { nanoid } from "nanoid/non-secure";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 const CreateRecipe = () => {
   const navigation = useNavigation();
-  const [recipeName, setRecipeName] = useState("");
-  const [beerStyle, setBeerStyle] = useState("");
+  const newId = nanoid(16);
+  const [name, setRecipeName] = useState("");
+  const [style, setRecipeStyle] = useState("");
   const [batchSize, setBatchSize] = useState("");
-  const [originalGravity, setOriginalGravity] = useState("");
-  const [finalGravity, setFinalGravity] = useState("");
-  const [fermentationTemp, setFermentationTemp] = useState("");
-  const [fermentationTime, setFermentationTime] = useState("");
+  const [og, setOg] = useState("");
+  const [fg, setFg] = useState("");
+  const [fTemp, setFermentationTemp] = useState("");
+  const [fTime, setFermentationTime] = useState("");
 
   const saveRecipe = async () => {
     try {
-      // Generate a unique ID for the recipe
-      const id = Date.now().toString();
       const recipeData = {
-        id,
-        recipeName,
-        beerStyle,
+        id: newId,
+        name,
+        style,
         batchSize,
-        originalGravity,
-        finalGravity,
-        fermentationTemp,
-        fermentationTime,
+        og,
+        fg,
+        fTemp,
+        fTime,
       };
       // Save the recipe data to AsyncStorage
       const existingRecipes = await getRecipes();
@@ -50,59 +51,72 @@ const CreateRecipe = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Recipe</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.textTitle}>Recipe Name:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Recipe Name"
+        placeholder="Enter your Recipe name!"
         onChangeText={setRecipeName}
-        value={recipeName}
+        value={name}
+        key="name"
       />
+      <Text style={styles.textTitle}>Brew Style:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Beer Style"
-        onChangeText={setBeerStyle}
-        value={beerStyle}
+        placeholder="IPA, Lager, Pilsner, etc."
+        onChangeText={setRecipeStyle}
+        value={style}
+        key="style"
       />
+      <Text style={styles.textTitle}>Batch Size:</Text>
       <TextInput
         style={styles.input}
         placeholder="Batch Size (gallons)"
         onChangeText={setBatchSize}
         value={batchSize}
+        key="batchSize"
         keyboardType="numeric"
       />
+      <Text style={styles.textTitle}>Original Gravity:</Text>
       <TextInput
         style={styles.input}
         placeholder="Original Gravity"
-        onChangeText={setOriginalGravity}
-        value={originalGravity}
+        onChangeText={setOg}
+        value={og}
+        key="og"
         keyboardType="numeric"
       />
+      <Text style={styles.textTitle}>Final Gravity:</Text>
       <TextInput
         style={styles.input}
         placeholder="Final Gravity"
-        onChangeText={setFinalGravity}
-        value={finalGravity}
+        onChangeText={setFg}
+        value={fg}
+        key="fg"
         keyboardType="numeric"
       />
+      <Text style={styles.textTitle}>Fermentation Temperature:</Text>
       <TextInput
         style={styles.input}
         placeholder="Fermentation Temperature (F)"
         onChangeText={setFermentationTemp}
-        value={fermentationTemp}
+        value={fTemp}
+        key="fTemp"
         keyboardType="numeric"
       />
+      <Text style={styles.textTitle}>Fermentation Time:</Text>
       <TextInput
         style={styles.input}
         placeholder="Fermentation Time (days)"
         onChangeText={setFermentationTime}
-        value={fermentationTime}
+        value={fTime}
+        key="fTime"
         keyboardType="numeric"
       />
       <TouchableOpacity style={styles.button} onPress={saveRecipe}>
-        <Text style={styles.buttonText}>Save Recipe</Text>
+        <Text style={styles.buttonText}>Create Recipe</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -116,6 +130,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  textTitle: {
+    fontWeight: "bold",
+    marginTop: 10,
   },
   input: {
     height: 40,
@@ -137,6 +155,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 18,
+  },
+  placeholder: {
+    color: "#ccc",
   },
 });
 

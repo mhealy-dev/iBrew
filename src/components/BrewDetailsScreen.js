@@ -7,6 +7,8 @@ import {
   Button,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -43,13 +45,13 @@ const DetailsScreen = ({ route }) => {
     try {
       const existingBrews = await AsyncStorage.getItem("brews");
       const brews = existingBrews ? JSON.parse(existingBrews) : [];
-
       const brewIndex = brews.findIndex((b) => b.id === brew.id);
       if (brewIndex !== -1) {
         const updatedBrews = [...brews];
         updatedBrews[brewIndex] = updatedBrew;
         await AsyncStorage.setItem("brews", JSON.stringify(updatedBrews));
         console.log("Brew saved successfully");
+        console.log(brew.id);
         navigation.navigate("Active Brews");
         refreshBrews(true); // Set to true to refresh the brews
       }
@@ -58,6 +60,21 @@ const DetailsScreen = ({ route }) => {
     }
 
     setEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditing(false);
+    // Reset the form to the original values
+    setName(brew.name);
+    setDate(new Date(brew.date));
+    setStyle(brew.style);
+    setBatchSize(brew.batchSize.toString());
+    setIbu(brew.ibu ? brew.ibu.toString() : "");
+    setAbv(brew.abv ? brew.abv.toString() : "");
+    setOg(brew.og ? brew.og.toString() : "");
+    setFg(brew.fg ? brew.fg.toString() : "");
+    setNotes(brew.notes);
+    console.log("Brew changes cancelled successfully");
   };
 
   const handleDelete = async () => {
@@ -86,8 +103,9 @@ const DetailsScreen = ({ route }) => {
                   JSON.stringify(updatedBrews)
                 );
                 console.log("Brew deleted successfully");
-                navigation.goBack();
+                console.log(brew.id);
                 refreshBrews(true);
+                navigation.goBack();
               }
             } catch (error) {
               console.log("Error deleting brew:", error);
@@ -114,206 +132,232 @@ const DetailsScreen = ({ route }) => {
   }, [editing]);
 
   return (
-    <View style={styles.container}>
-      {editing ? (
-        <View style={styles.inputContainer}>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Name:</Text>
-            <TextInput
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-              placeholder="Name"
-              key="name"
-            />
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        {editing ? (
+          <View style={styles.formContainer}>
+            <View style={styles.formGroup}>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Brew Name:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Brew Name"
+                  value={name}
+                  key="name"
+                  onChangeText={setName}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Brew Date:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={brew.date.toISOString().slice(0, 10)}
+                  value={date}
+                  key="date"
+                  onChangeText={(text) => setDate(new Date(text))} // convert to Date object
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Style:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Style"
+                  value={style}
+                  key="style"
+                  onChangeText={setStyle}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Batch Size:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Batch Size (gallons)"
+                  value={batchSize}
+                  key="batch-size"
+                  keyboardType="numeric"
+                  onChangeText={setBatchSize}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>IBU:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="IBU"
+                  value={ibu}
+                  key="ibu"
+                  keyboardType="numeric"
+                  onChangeText={setIbu}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>ABV:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="ABV"
+                  value={abv}
+                  key="abv"
+                  keyboardType="numeric"
+                  onChangeText={setAbv}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>OG:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Original Gravity"
+                  value={og}
+                  key="og"
+                  keyboardType="numeric"
+                  onChangeText={setOg}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>FG:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Final Gravity"
+                  value={fg}
+                  key="fg"
+                  keyboardType="numeric"
+                  onChangeText={setFg}
+                />
+              </View>
+              <View style={styles.formRow}>
+                <Text style={styles.label}>Notes:</Text>
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Notes"
+                value={notes}
+                multiline={true}
+                key="notes"
+                onChangeText={setNotes}
+              />
+            </View>
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.button}
+                title="save Changes"
+                onPress={handleSave}
+              >
+                <Text style={styles.buttonText}>Save Changes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                title="Cancel Changes"
+                onPress={handleCancel}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Date:</Text>
-            <TextInput
-              style={styles.input}
-              value={date}
-              onChangeText={(text) => setDate(new Date(text))} // convert to Date object
-              placeholder={brew.date.toISOString().slice(0, 10)}
-              key="date"
-            />
+        ) : (
+          <View style={styles.detailsContainer}>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Brew Name:</Text>
+              <Text style={styles.detailsText}>{brew.name}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Brew Date:</Text>
+              <Text style={styles.detailsText}>
+                {brew.date.toISOString().slice(0, 10)}
+              </Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Style:</Text>
+              <Text style={styles.detailsText}>{brew.style}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Batch Size:</Text>
+              <Text style={styles.detailsText}>{brew.batchSize} gallons</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>IBU:</Text>
+              <Text style={styles.detailsText}>{brew.ibu}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>ABV:</Text>
+              <Text style={styles.detailsText}>{brew.abv}%</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>OG:</Text>
+              <Text style={styles.detailsText}>{brew.og}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>FG:</Text>
+              <Text style={styles.detailsText}>{brew.fg}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Notes:</Text>
+              <Text style={styles.detailsText}>{brew.notes}</Text>
+            </View>
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.button}
+                title="Edit Brew"
+                onPress={() => {
+                  setEditing(true);
+                }}
+              >
+                <Text style={styles.buttonText}>Edit Brew</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                title="Delete Brew"
+                onPress={handleDelete}
+              >
+                <Text style={styles.buttonText}>Delete Brew</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Style:</Text>
-            <TextInput
-              style={styles.input}
-              value={style}
-              onChangeText={setStyle}
-              placeholder="Style"
-              key="style"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Batch Size:</Text>
-            <TextInput
-              style={styles.input}
-              value={batchSize}
-              onChangeText={setBatchSize}
-              placeholder="Batch Size (gallons)"
-              keyboardType="numeric"
-              key="batch-size"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>IBU:</Text>
-            <TextInput
-              style={styles.input}
-              value={ibu}
-              onChangeText={setIbu}
-              placeholder="IBU"
-              keyboardType="numeric"
-              key="ibu"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>ABV:</Text>
-            <TextInput
-              style={styles.input}
-              value={abv}
-              onChangeText={setAbv}
-              placeholder="ABV"
-              keyboardType="numeric"
-              key="abv"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>OG:</Text>
-            <TextInput
-              style={styles.input}
-              value={og}
-              onChangeText={setOg}
-              placeholder="Original Gravity"
-              keyboardType="numeric"
-              key="og"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>FG:</Text>
-            <TextInput
-              style={styles.input}
-              value={fg}
-              onChangeText={setFg}
-              placeholder="Final Gravity"
-              keyboardType="numeric"
-              key="fg"
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Notes:</Text>
-            <TextInput
-              style={styles.input}
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Notes"
-              multiline={true}
-              key="notes"
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.button}
-            title="save Changes"
-            onPress={handleSave}
-          >
-            <Text style={styles.buttonText}>Save Changes</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.inputContainer}>
-          <Text style={styles.title}>{brew.name}</Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>Brew Date:</Text>{" "}
-            {brew.date.toISOString().slice(0, 10)}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>Style:</Text> {brew.style}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>Batch Size:</Text> {brew.batchSize}{" "}
-            gallons
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>IBU:</Text> {brew.ibu}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>ABV:</Text> {brew.abv}%
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>OG:</Text> {brew.og}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>FG:</Text> {brew.fg}
-          </Text>
-          <Text style={styles.text}>
-            <Text style={styles.bold}>Notes:</Text> {brew.notes}
-          </Text>
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity
-              style={styles.button}
-              title="Edit Brew"
-              onPress={() => {
-                setEditing(true);
-              }}
-            >
-              <Text style={styles.buttonText}>Edit Brew</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              title="Delete Brew"
-              onPress={handleDelete}
-            >
-              <Text style={styles.buttonText}>Delete Brew</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+  },
+  detailsContainer: {
+    flex: 1,
     padding: 20,
   },
-  title: {
-    fontSize: 24,
+  detailsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  label: {
+    fontSize: 16,
     fontWeight: "bold",
+    width: 120,
+  },
+  detailsText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  formContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  formGroup: {
     marginBottom: 10,
   },
-  text: {
-    fontSize: 18,
-    marginBottom: 5,
-    fontWeight: "normal",
-  },
-  bold: {
-    fontWeight: "bold",
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  inputGroup: {
+  formRow: {
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 10,
   },
-  label: {
-    flex: 1,
-    marginRight: 10,
-    fontWeight: "bold",
-    textAlign: "right",
-  },
   input: {
-    flex: 2,
+    flex: 1,
     height: 40,
-    paddingHorizontal: 10,
-    borderWidth: 1,
     borderColor: "#ccc",
+    borderWidth: 1,
     borderRadius: 5,
+    paddingHorizontal: 10,
+    marginLeft: 10,
   },
   button: {
     backgroundColor: "#dadada",
@@ -328,6 +372,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
   },
+  cancelButton: {
+    backgroundColor: "#d33a3a",
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 5,
+  },
+  cancelButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
 });
-
 export default DetailsScreen;

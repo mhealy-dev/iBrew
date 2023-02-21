@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ActiveScreen = ({ navigation }) => {
+const ActiveBrewsScreen = ({ navigation }) => {
   const [brews, setBrews] = useState([]);
   const [refreshActiveScreen, setRefreshActiveScreen] = useState(false);
 
@@ -60,13 +60,17 @@ const ActiveScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
+      {brews.length > 0 ? (
         <FlatList
           data={brews}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
-      </View>
+      ) : (
+        <Text style={styles.noBrewsText}>
+          You haven't created any brews yet.
+        </Text>
+      )}
     </SafeAreaView>
   );
 };
@@ -75,6 +79,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F0F0F0",
+    padding: 5,
   },
   brewCard: {
     backgroundColor: "#FFFFFF",
@@ -99,6 +104,12 @@ const styles = StyleSheet.create({
   brewStyle: {
     fontSize: 18,
   },
+  noBrewsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#777",
+  },
 });
 
-export default ActiveScreen;
+export default ActiveBrewsScreen;

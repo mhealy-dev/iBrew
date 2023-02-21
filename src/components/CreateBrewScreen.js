@@ -8,12 +8,14 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
+import { nanoid } from "nanoid/non-secure";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
-const CreateScreen = () => {
+const CreateBrew = () => {
   const navigation = useNavigation();
+  const newId = nanoid(16);
   const [name, setBrewName] = useState("");
   const [date, setBrewDate] = useState(new Date());
   const [style, setBrewStyle] = useState("");
@@ -33,6 +35,7 @@ const CreateScreen = () => {
   };
 
   const handleSubmit = async () => {
+    console.log("Brew ID: ", newId);
     console.log("Brew Name: ", name);
     console.log("Brew Date: ", date.toISOString("en-US").slice(0, 10));
     console.log("Brew Style: ", style);
@@ -40,14 +43,20 @@ const CreateScreen = () => {
     console.log("Brew Notes: ", notes);
 
     const newBrew = {
+      id: newId,
       name,
       date: date.toISOString().slice(0, 10),
       style,
       batchSize,
       notes,
+      ibu,
+      abv,
+      og,
+      fg,
     };
 
     try {
+      // Save the brew data to AsyncStorage
       const existingBrews = await AsyncStorage.getItem("brews");
       const newBrews = existingBrews
         ? [...JSON.parse(existingBrews), newBrew]
@@ -64,61 +73,59 @@ const CreateScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <Text style={styles.textTitle}>Brew Name:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Brew Name"
-          value={name}
-          key="name"
-          onChangeText={(text) => setBrewName(text)}
+      <Text style={styles.textTitle}>Brew Name:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter your Homebrew name!"
+        value={name}
+        key="name"
+        onChangeText={(text) => setBrewName(text)}
+      />
+      <Text style={styles.textTitle}>Brew Date:</Text>
+      <TouchableOpacity
+        style={styles.dateInput}
+        onPress={() => setShowDatePicker(true)}
+      >
+        <Text style={styles.text}>
+          {date ? date.toISOString().slice(0, 10) : "Brew Date"}
+        </Text>
+      </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          value={date || new Date()}
+          mode="date"
+          display="default"
+          key="date"
+          onChange={handleDateChange}
         />
-        <Text style={styles.textTitle}>Brew Date:</Text>
-        <TouchableOpacity
-          style={styles.dateInput}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.text}>
-            {date ? date.toISOString().slice(0, 10) : "Brew Date"}
-          </Text>
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={date || new Date()}
-            mode="date"
-            display="default"
-            key="date"
-            onChange={handleDateChange}
-          />
-        )}
-        <Text style={styles.textTitle}>Brew Style:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Brew Style"
-          value={style}
-          key="style"
-          onChangeText={setBrewStyle}
-        />
-        <Text style={styles.textTitle}>Brew Size:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Batch Size in Gallons"
-          value={batchSize}
-          key="batch-size"
-          onChangeText={(text) => setBatchSize(text)}
-        />
-        <Text style={styles.textTitle}>Brew Notes:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Notes"
-          value={notes}
-          key="notes"
-          onChangeText={(text) => setBrewNotes(text)}
-        />
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Create Brew</Text>
-        </TouchableOpacity>
-      </View>
+      )}
+      <Text style={styles.textTitle}>Brew Style:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="IPA, Lager, Pilsner, etc."
+        value={style}
+        key="style"
+        onChangeText={setBrewStyle}
+      />
+      <Text style={styles.textTitle}>Brew Size:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Batch Size in Gallons"
+        value={batchSize}
+        key="batch-size"
+        onChangeText={(text) => setBatchSize(text)}
+      />
+      <Text style={styles.textTitle}>Brew Notes:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Notes"
+        value={notes}
+        key="notes"
+        onChangeText={(text) => setBrewNotes(text)}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Create Brew</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -129,17 +136,22 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
   textTitle: {
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 10,
   },
   input: {
     height: 40,
-    marginVertical: 5,
-    paddingHorizontal: 10,
-    borderWidth: 1,
     borderColor: "#ccc",
+    borderWidth: 1,
     borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
   dateInput: {
     height: 40,
@@ -175,4 +187,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateScreen;
+export default CreateBrew;

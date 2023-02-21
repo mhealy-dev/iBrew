@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#dadada",
     borderColor: "#999999",
     paddingVertical: 20, // Adjust paddingVertical to increase button height
-    paddingHorizontal: 30, // Adjust paddingHorizontal to increase button width
+    paddingHorizontal: 35, // Adjust paddingHorizontal to increase button width
     marginHorizontal: 10,
     borderRadius: 10, // Adjust borderRadius to make button edges more round
     marginBottom: 50, // Increase marginTop to move the buttons higher

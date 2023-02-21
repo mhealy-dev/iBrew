@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -30,28 +31,31 @@ const RecipeListScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.recipeItem}
+      style={styles.recipeCard}
       onPress={() => handleRecipePress(item)}
     >
-      <Text style={styles.recipeName}>{item.recipeName}</Text>
-      <Text style={styles.beerStyle}>{item.beerStyle}</Text>
+      <View style={styles.recipeCardContent}>
+        <Text style={styles.recipeName}>{item.name}</Text>
+        <Text style={styles.brewStyle}>{item.style}</Text>
+        <Text style={styles.fTime}>{item.fTime} days</Text>
+      </View>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {recipes.length > 0 ? (
         <FlatList
           data={recipes}
-          keyExtractor={(item) => item.id}
           renderItem={renderItem}
+          keyExtractor={(item) => item.id}
         />
       ) : (
         <Text style={styles.noRecipesText}>
           You haven't created any recipes yet.
         </Text>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -68,13 +72,25 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   recipeName: {
+    fontSize: 24,
     fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 4,
   },
-  beerStyle: {
-    fontSize: 14,
-    color: "#777",
+  recipeCard: {
+    backgroundColor: "#FFFFFF",
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    elevation: 4,
+  },
+  recipeCardContent: {
+    padding: 16,
+  },
+  brewStyle: {
+    fontSize: 18,
+  },
+  fTime: {
+    fontSize: 18,
   },
   noRecipesText: {
     textAlign: "center",
