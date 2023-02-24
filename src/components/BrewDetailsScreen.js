@@ -10,16 +10,18 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
+import { AutoGrowingTextInput } from "react-native-textinput-utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
-const DetailsScreen = ({ route }) => {
+const BrewDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const { brew, refreshBrews } = route.params;
 
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(brew.name);
-  const [date, setDate] = useState(new Date(brew.date));
+  const [startDate, setStartDate] = useState(new Date(brew.startDate));
+  const [endDate, setEndDate] = useState(new Date(brew.endDate));
   const [style, setStyle] = useState(brew.style);
   const [batchSize, setBatchSize] = useState(brew.batchSize.toString());
   const [ibu, setIbu] = useState(brew.ibu ? brew.ibu.toString() : "");
@@ -31,7 +33,8 @@ const DetailsScreen = ({ route }) => {
   const handleSave = async () => {
     const updatedBrew = {
       id: brew.id,
-      date: date.getTime(),
+      startDate: startDate.getTime(),
+      endDate: endDate.getTime(),
       name,
       style,
       batchSize: parseFloat(batchSize),
@@ -66,7 +69,8 @@ const DetailsScreen = ({ route }) => {
     setEditing(false);
     // Reset the form to the original values
     setName(brew.name);
-    setDate(new Date(brew.date));
+    setStartDate(new Date(brew.startDate));
+    setEndDate(new Date(brew.endDate));
     setStyle(brew.style);
     setBatchSize(brew.batchSize.toString());
     setIbu(brew.ibu ? brew.ibu.toString() : "");
@@ -120,7 +124,8 @@ const DetailsScreen = ({ route }) => {
   useEffect(() => {
     if (!editing) {
       setName(brew.name);
-      setDate(new Date(brew.date));
+      setStartDate(new Date(brew.startDate));
+      setEndDate(new Date(brew.endDate));
       setStyle(brew.style);
       setBatchSize(brew.batchSize.toString());
       setIbu(brew.ibu && brew.ibu.toString());
@@ -138,101 +143,126 @@ const DetailsScreen = ({ route }) => {
           <View style={styles.formContainer}>
             <View style={styles.formGroup}>
               <View style={styles.formRow}>
-                <Text style={styles.label}>Brew Name:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter Brew Name"
-                  value={name}
-                  key="name"
-                  onChangeText={setName}
-                />
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>Brew Name:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Brew Name"
+                    value={name}
+                    key="name"
+                    onChangeText={setName}
+                  />
+                </View>
               </View>
               <View style={styles.formRow}>
-                <Text style={styles.label}>Brew Date:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={brew.date.toISOString().slice(0, 10)}
-                  value={date}
-                  key="date"
-                  onChangeText={(text) => setDate(new Date(text))} // convert to Date object
-                />
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>Start Date:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={new Date(brew.startDate)
+                      .toISOString()
+                      .slice(0, 10)}
+                    value={startDate.toISOString().slice(0, 10)}
+                    key="startDate"
+                    onChangeText={(text) => setStartDate(new Date(text))}
+                  />
+                </View>
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>End Date:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={new Date(brew.endDate)
+                      .toISOString()
+                      .slice(0, 10)}
+                    value={endDate.toISOString().slice(0, 10)}
+                    key="endDate"
+                    onChangeText={(text) => setEndDate(new Date(text))}
+                  />
+                </View>
               </View>
               <View style={styles.formRow}>
-                <Text style={styles.label}>Style:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Style"
-                  value={style}
-                  key="style"
-                  onChangeText={setStyle}
-                />
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>Style:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Style"
+                    value={style}
+                    key="style"
+                    onChangeText={setStyle}
+                  />
+                </View>
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>Batch Size:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Batch Size (gallons)"
+                    value={batchSize}
+                    key="batch-size"
+                    keyboardType="numeric"
+                    onChangeText={setBatchSize}
+                  />
+                </View>
               </View>
               <View style={styles.formRow}>
-                <Text style={styles.label}>Batch Size:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Batch Size (gallons)"
-                  value={batchSize}
-                  key="batch-size"
-                  keyboardType="numeric"
-                  onChangeText={setBatchSize}
-                />
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>OG:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Original Gravity"
+                    value={og}
+                    key="og"
+                    keyboardType="numeric"
+                    onChangeText={setOg}
+                  />
+                </View>
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>FG:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Final Gravity"
+                    value={fg}
+                    key="fg"
+                    keyboardType="numeric"
+                    onChangeText={setFg}
+                  />
+                </View>
               </View>
               <View style={styles.formRow}>
-                <Text style={styles.label}>IBU:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="IBU"
-                  value={ibu}
-                  key="ibu"
-                  keyboardType="numeric"
-                  onChangeText={setIbu}
-                />
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>IBU:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="IBU"
+                    value={ibu}
+                    key="ibu"
+                    keyboardType="numeric"
+                    onChangeText={setIbu}
+                  />
+                </View>
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>ABV:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="ABV"
+                    value={abv}
+                    key="abv"
+                    keyboardType="numeric"
+                    onChangeText={setAbv}
+                  />
+                </View>
               </View>
               <View style={styles.formRow}>
-                <Text style={styles.label}>ABV:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="ABV"
-                  value={abv}
-                  key="abv"
-                  keyboardType="numeric"
-                  onChangeText={setAbv}
-                />
+                <View style={styles.formCol}>
+                  <Text style={styles.label}>Notes:</Text>
+                  <TextInput
+                    style={[styles.notesInput]}
+                    placeholder="Notes"
+                    value={notes}
+                    key="notes"
+                    onChangeText={setNotes}
+                  />
+                </View>
               </View>
-              <View style={styles.formRow}>
-                <Text style={styles.label}>OG:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Original Gravity"
-                  value={og}
-                  key="og"
-                  keyboardType="numeric"
-                  onChangeText={setOg}
-                />
-              </View>
-              <View style={styles.formRow}>
-                <Text style={styles.label}>FG:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Final Gravity"
-                  value={fg}
-                  key="fg"
-                  keyboardType="numeric"
-                  onChangeText={setFg}
-                />
-              </View>
-              <View style={styles.formRow}>
-                <Text style={styles.label}>Notes:</Text>
-              </View>
-              <TextInput
-                style={styles.input}
-                placeholder="Notes"
-                value={notes}
-                multiline={true}
-                key="notes"
-                onChangeText={setNotes}
-              />
             </View>
             <View style={styles.buttonGroup}>
               <TouchableOpacity
@@ -258,9 +288,15 @@ const DetailsScreen = ({ route }) => {
               <Text style={styles.detailsText}>{brew.name}</Text>
             </View>
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Brew Date:</Text>
+              <Text style={styles.label}>Start Date:</Text>
               <Text style={styles.detailsText}>
-                {brew.date.toISOString().slice(0, 10)}
+                {brew.startDate.toISOString().slice(0, 10)}
+              </Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>End Date:</Text>
+              <Text style={styles.detailsText}>
+                {brew.endDate.toISOString().slice(0, 10)}
               </Text>
             </View>
             <View style={styles.detailsRow}>
@@ -333,6 +369,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     width: 120,
+    marginRight: 10,
+    alignSelf: "auto",
   },
   detailsText: {
     fontSize: 16,
@@ -350,6 +388,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
   },
+  formCol: {
+    flex: 1,
+    marginRight: 10,
+  },
   input: {
     flex: 1,
     height: 40,
@@ -357,7 +399,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginLeft: 10,
   },
   button: {
     backgroundColor: "#dadada",
@@ -382,5 +423,61 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  topContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  topLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    width: 120,
+    marginRight: 10,
+    alignSelf: "center",
+  },
+  topInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  middleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  middleLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    width: 120,
+    marginRight: 10,
+    alignSelf: "center",
+  },
+  middleInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  notesContainer: {
+    marginBottom: 10,
+  },
+  notesLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  notesInput: {
+    flex: 1,
+    height: "auto",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
 });
-export default DetailsScreen;
+
+export default BrewDetailsScreen;

@@ -21,10 +21,20 @@ const ActiveBrewsScreen = ({ navigation }) => {
     try {
       const brewsJson = await AsyncStorage.getItem("brews");
       if (brewsJson !== null) {
-        const storedBrews = JSON.parse(brewsJson).map((brew) => ({
-          ...brew,
-          date: new Date(brew.date),
-        }));
+        const storedBrews = JSON.parse(brewsJson)
+          .map((brew) => {
+            try {
+              return {
+                ...brew,
+                startDate: new Date(brew.startDate),
+                endDate: new Date(brew.endDate),
+              };
+            } catch (e) {
+              console.log("Error parsing date:", brew.date);
+              return null;
+            }
+          })
+          .filter((brew) => brew !== null);
         setBrews(storedBrews);
       }
     } catch (e) {
@@ -50,8 +60,11 @@ const ActiveBrewsScreen = ({ navigation }) => {
     >
       <View style={styles.brewCardContent}>
         <Text style={styles.brewName}>{item.name}</Text>
-        <Text style={styles.brewDate}>
-          {item.date.toISOString().slice(0, 10)}
+        <Text style={styles.brewStartDate}>
+          {item.startDate.toISOString().slice(0, 10)}
+        </Text>
+        <Text style={styles.brewEndDate}>
+          {item.endDate.toISOString().slice(0, 10)}
         </Text>
         <Text style={styles.brewStyle}>{item.style}</Text>
       </View>

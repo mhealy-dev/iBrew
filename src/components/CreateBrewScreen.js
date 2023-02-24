@@ -17,7 +17,8 @@ const CreateBrew = () => {
   const navigation = useNavigation();
   const newId = nanoid(16);
   const [name, setBrewName] = useState("");
-  const [date, setBrewDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [style, setBrewStyle] = useState("");
   const [batchSize, setBatchSize] = useState("");
   const [notes, setBrewNotes] = useState("");
@@ -26,18 +27,44 @@ const CreateBrew = () => {
   const [og, setOg] = useState("");
   const [fg, setFg] = useState("");
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    const currentDate = selectedDate || date;
-    setBrewDate(currentDate);
+  const handleStartDateChange = (event, selectedStartDate) => {
+    if (selectedStartDate === undefined) {
+      // User cancelled the date picker
+      return;
+    }
+
+    try {
+      setShowStartDatePicker(false);
+      const currentStartDate = selectedStartDate || startDate;
+      setStartDate(currentStartDate);
+    } catch (error) {
+      console.log("Error setting start date:", error);
+    }
+  };
+
+  const handleEndDateChange = (event, selectedEndDate) => {
+    if (selectedEndDate === undefined) {
+      // User cancelled the date picker
+      return;
+    }
+
+    try {
+      setShowEndDatePicker(false);
+      const currentEndDate = selectedEndDate || endDate;
+      setEndDate(currentEndDate);
+    } catch (error) {
+      console.log("Error setting end date:", error);
+    }
   };
 
   const handleSubmit = async () => {
     console.log("Brew ID: ", newId);
     console.log("Brew Name: ", name);
-    console.log("Brew Date: ", date.toISOString("en-US").slice(0, 10));
+    console.log("Start Date: ", startDate.toISOString("en-US").slice(0, 10));
+    console.log("End Date: ", endDate.toISOString("en-US").slice(0, 10));
     console.log("Brew Style: ", style);
     console.log("Batch Size: ", batchSize);
     console.log("Brew Notes: ", notes);
@@ -45,7 +72,8 @@ const CreateBrew = () => {
     const newBrew = {
       id: newId,
       name,
-      date: date.toISOString().slice(0, 10),
+      startDate: startDate.toISOString().slice(0, 10),
+      endDate: endDate.toISOString().slice(0, 10),
       style,
       batchSize,
       notes,
@@ -68,6 +96,8 @@ const CreateBrew = () => {
       navigation.navigate("Home");
     } catch (error) {
       console.log("Error saving brew:", error);
+      // Display an error message to the user
+      alert("Error saving brew: " + error.message);
     }
   };
 
@@ -81,22 +111,40 @@ const CreateBrew = () => {
         key="name"
         onChangeText={(text) => setBrewName(text)}
       />
-      <Text style={styles.textTitle}>Brew Date:</Text>
+      <Text style={styles.textTitle}>Start Date:</Text>
       <TouchableOpacity
         style={styles.dateInput}
-        onPress={() => setShowDatePicker(true)}
+        onPress={() => setShowStartDatePicker(true)}
       >
         <Text style={styles.text}>
-          {date ? date.toISOString().slice(0, 10) : "Brew Date"}
+          {startDate ? startDate.toISOString().slice(0, 10) : "Start Date"}
         </Text>
       </TouchableOpacity>
-      {showDatePicker && (
+      {showStartDatePicker && (
         <DateTimePicker
-          value={date || new Date()}
+          value={startDate || new Date()}
           mode="date"
           display="default"
-          key="date"
-          onChange={handleDateChange}
+          key="startDate"
+          onChange={handleStartDateChange}
+        />
+      )}
+      <Text style={styles.textTitle}>End Date:</Text>
+      <TouchableOpacity
+        style={styles.dateInput}
+        onPress={() => setShowEndDatePicker(true)}
+      >
+        <Text style={styles.text}>
+          {endDate ? endDate.toISOString().slice(0, 10) : "End Date"}
+        </Text>
+      </TouchableOpacity>
+      {showEndDatePicker && (
+        <DateTimePicker
+          value={endDate || new Date()}
+          mode="date"
+          display="default"
+          key="endDate"
+          onChange={handleEndDateChange}
         />
       )}
       <Text style={styles.textTitle}>Brew Style:</Text>
@@ -118,7 +166,7 @@ const CreateBrew = () => {
       <Text style={styles.textTitle}>Brew Notes:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Notes"
+        placeholder="Notes (These can be added later!)"
         value={notes}
         key="notes"
         onChangeText={(text) => setBrewNotes(text)}
