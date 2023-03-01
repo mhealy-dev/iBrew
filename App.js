@@ -4,17 +4,17 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainAppScreen from "./src/components/MainAppScreen";
 import HomeScreen from "./src/components/HomeScreen";
-import SignupScreen from "./src/components/SignupScreen";
-import LoginScreen from "./src/components/LoginScreen";
-import ProfileScreen from "./src/components/ProfileScreen";
-import SettingsScreen from "./src/components/SettingsScreen";
-import ForgotPasswordScreen from "./src/components/ForgotPasswordScreen";
-import CreateBrewScreen from "./src/components/CreateBrewScreen";
-import ActiveBrewListScreen from "./src/components/ActiveBrewListScreen";
-import BrewDetailsScreen from "./src/components/BrewDetailsScreen";
-import CreateRecipeScreen from "./src/components/CreateRecipeScreen";
-import RecipeListScreen from "./src/components/RecipeListScreen";
-import RecipeDetailsScreen from "./src/components/RecipeDetailsScreen";
+import SignupScreen from "./src/components/auth/SignupScreen";
+import LoginScreen from "./src/components/auth/LoginScreen";
+import ForgotPasswordScreen from "./src/components/auth/ForgotPasswordScreen";
+import ProfileScreen from "./src/components/user/ProfileScreen";
+import SettingsScreen from "./src/components/settings/SettingsScreen";
+import CreateBrewScreen from "./src/components/brew/CreateBrewScreen";
+import ActiveBrewListScreen from "./src/components/brew/ActiveBrewListScreen";
+import BrewDetailsScreen from "./src/components/brew/BrewDetailsScreen";
+import CreateRecipeScreen from "./src/components/recipe/CreateRecipeScreen";
+import RecipeListScreen from "./src/components/recipe/RecipeListScreen";
+import RecipeDetailsScreen from "./src/components/recipe/RecipeDetailsScreen";
 
 const Stack = createStackNavigator();
 

@@ -13,6 +13,7 @@ import {
 import { AutoGrowingTextInput } from "react-native-textinput-utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import Timer from "./BrewTimers.js";
 
 const BrewDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -263,6 +264,7 @@ const BrewDetailsScreen = ({ route }) => {
                   />
                 </View>
               </View>
+              <Timer />
             </View>
             <View style={styles.buttonGroup}>
               <TouchableOpacity
