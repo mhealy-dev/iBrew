@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { nanoid } from "nanoid/non-secure";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
 
 const CreateBrew = () => {
   const navigation = useNavigation();
@@ -60,6 +62,9 @@ const CreateBrew = () => {
     }
   };
 
+  const [recipeNames, setRecipeNames] = useState([]);
+  const [selectedRecipe, setSelectedRecipe] = useState("");
+
   const handleSubmit = async () => {
     console.log("Brew ID: ", newId);
     console.log("Brew Name: ", name);
@@ -74,9 +79,9 @@ const CreateBrew = () => {
       name,
       startDate: startDate.toISOString().slice(0, 10),
       endDate: endDate.toISOString().slice(0, 10),
-      style,
-      batchSize,
-      notes,
+      style: selectedRecipe ? style : "",
+      batchSize: selectedRecipe ? batchSize : "",
+      notes: selectedRecipe ? notes : "",
       ibu,
       abv,
       og,
@@ -99,7 +104,40 @@ const CreateBrew = () => {
       // Display an error message to the user
       alert("Error saving brew: " + error.message);
     }
+
+    if (selectedRecipe) {
+      const recipeData = await AsyncStorage.getItem("recipes");
+      const recipes = JSON.parse(recipeData);
+      const selectedRecipeData = recipes.find((r) => r.name === selectedRecipe);
+      setBrewName(selectedRecipeData.name);
+      setBrewStyle(selectedRecipeData.style);
+      setBatchSize(selectedRecipeData.batchSize.toString());
+      setOg(selectedRecipeData.og ? selectedRecipeData.og.toString() : "");
+      setFg(selectedRecipeData.fg ? selectedRecipeData.fg.toString() : "");
+      setFTemp(
+        selectedRecipeData.fTemp ? selectedRecipeData.fTemp.toString() : ""
+      );
+      setFTime(
+        selectedRecipeData.fTime ? selectedRecipeData.fTime.toString() : ""
+      );
+      setBrewNotes(selectedRecipeData.notes);
+    }
   };
+
+  useEffect(() => {
+    const getRecipeNames = async () => {
+      try {
+        const recipeData = await AsyncStorage.getItem("recipes");
+        const recipes = JSON.parse(recipeData);
+        const names = recipes.map((r) => r.name);
+        setRecipeNames(names);
+      } catch (error) {
+        console.log("Error fetching recipe names:", error);
+      }
+    };
+
+    getRecipeNames();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -147,6 +185,17 @@ const CreateBrew = () => {
           onChange={handleEndDateChange}
         />
       )}
+      <Text style={styles.textTitle}>Select Recipe:</Text>
+      <Picker
+        selectedValue={selectedRecipe}
+        onValueChange={(itemValue) => setSelectedRecipe(itemValue)}
+        style={styles.input}
+      >
+        <Picker.Item label="Select a recipe" value="" />
+        {recipeNames.map((name) => (
+          <Picker.Item label={name} value={name} key={name} />
+        ))}
+      </Picker>
       <Text style={styles.textTitle}>Brew Style:</Text>
       <TextInput
         style={styles.input}

@@ -264,7 +264,7 @@ const BrewDetailsScreen = ({ route }) => {
                   />
                 </View>
               </View>
-              <Timer />
+              {/* <Timer /> // BrewTimers.js */}
             </View>
             <View style={styles.buttonGroup}>
               <TouchableOpacity
